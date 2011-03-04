@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.version           = %q{0.9.9.4}
   s.summary           = %q{Wymeditor engine for Refinery CMS}
   s.description       = %q{The basic wymeditor for Refinery CMS}
-  s.date              = %q{2011-03-02}
+  s.date              = %q{2011-03-04}
   s.email             = %q{retro@ballgag.cz}
   s.homepage          = %q{http://refinerycms.com}
   s.rubyforge_project = %q{refinerycms}
@@ -15,6 +15,17 @@ Gem::Specification.new do |s|
   s.executables       = %w()
 
   s.files             = [
+    'app',
+    'app/helpers',
+    'app/helpers/wymeditor_helper.rb',
+    'app/views',
+    'app/views/admin',
+    'app/views/admin/pages',
+    'app/views/admin/pages/_editor_assets.html.erb',
+    'features',
+    'features/editor.feature',
+    'features/step_definitions',
+    'features/step_definitions/wymeditor_steps.rb',
     'lib',
     'lib/gemspec.rb',
     'lib/generators',
@@ -103,12 +114,12 @@ Gem::Specification.new do |s|
     'public/javascripts/wymeditor/skins',
     'public/javascripts/wymeditor/skins/refinery',
     'public/javascripts/wymeditor/skins/refinery/skin.js',
-    'refinerycms-wymeditor.gemspec',
-    'stylesheets',
-    'stylesheets/wymeditor',
-    'stylesheets/wymeditor/skins',
-    'stylesheets/wymeditor/skins/refinery',
-    'stylesheets/wymeditor/skins/refinery/skin.css',
-    'stylesheets/wymeditor/skins/refinery/wymiframe.css'
+    'public/stylesheets',
+    'public/stylesheets/wymeditor',
+    'public/stylesheets/wymeditor/skins',
+    'public/stylesheets/wymeditor/skins/refinery',
+    'public/stylesheets/wymeditor/skins/refinery/skin.css',
+    'public/stylesheets/wymeditor/skins/refinery/wymiframe.css',
+    'refinerycms-wymeditor.gemspec'
   ]
 end
