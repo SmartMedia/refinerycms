@@ -148,6 +148,14 @@ module Refinery
         end
       end
 
+      initializer 'ensure visual editor is defined' do |app|
+        unless Refinery.editor
+          puts "Please define which visual editor you want to use."
+          puts "For help with this, read http://refinerycms.com/guides/using-a-different-visual-editor"
+          exit(1)
+        end
+      end
+
     end
   end
 
