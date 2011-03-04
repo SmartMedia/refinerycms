@@ -30,6 +30,7 @@
 
   <div id='page_part_editors'>
     <% part_index = -1 %>
+    <%= editor_assets %>
     <%= f.fields_for :parts do |p| %>
       <%= render :partial => 'page_part_field',
                  :locals => {

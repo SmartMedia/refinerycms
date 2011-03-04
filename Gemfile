@@ -5,11 +5,7 @@ gemspec
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails'
 
-if RUBY_PLATFORM == 'java'
-  gem 'activerecord-jdbcsqlite3-adapter', '>= 1.0.2', :platform => :jruby
-else
-  gem 'sqlite3'
-end
+gem 'mysql'
 
 # Use unicorn as the web server
 # gem 'unicorn'
@@ -38,11 +34,15 @@ end
 # END REFINERY CMS ============================================================
 
 # REFINERY CMS DEVELOPMENT ====================================================
-
+gem 'spork'
 # END REFINERY CMS DEVELOPMENT =================================================
 
 # USER DEFINED
 
+# Select one editor
+gem 'refinerycms-wymeditor'
+# gem 'refinerycms-ckeditor'
+  
 # Specify additional Refinery CMS Engines here (all optional):
 # gem 'refinerycms-inquiries',    '~> 0.9'
 # gem 'refinerycms-news',         '~> 1.0'
