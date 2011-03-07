@@ -25,10 +25,10 @@ gem 'mysql'
 # REFINERY CMS ================================================================
 # Anything you put in here will be overridden when the app gets updated.
 
-# gem 'refinerycms', '~> 0.9.9.1'
+# gem 'refinerycms', '~> 0.9.9.4'
 
 group :development, :test do
-  gem 'refinerycms-testing',   '~> 0.9.9.1'
+  gem 'refinerycms-testing',    '~> 0.9.9.4'
 end
 
 # END REFINERY CMS ============================================================
