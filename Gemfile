@@ -5,7 +5,7 @@ gemspec
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails'
 
-gem 'mysql'
+gem 'sqlite3'
 
 # Use unicorn as the web server
 # gem 'unicorn'
