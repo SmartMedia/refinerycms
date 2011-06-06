@@ -257,7 +257,7 @@ class Page < ActiveRecord::Base
 
   # Returns true if this page is "published"
   def live?
-    not draft?
+    not draft? and published?
   end
 
   def published?

@@ -152,24 +152,28 @@ describe Page do
       page.publish_from = Time.now + 1.day
       page.publish_to = nil
       page.published?.should_not be
+      page.live?.should_not be
     end
 
     it "only to date" do
       page.publish_from = nil
       page.publish_to = Time.now - 1.day
       page.published?.should_not be
+      page.live?.should_not be
     end
 
     it "in range" do
       page.publish_from = Time.now - 1.day
       page.publish_to = Time.now + 1.day
       page.published?.should be
+      page.live?.should be
     end
 
     it "without limitation" do
       page.publish_from = nil
       page.publish_to = nil
       page.published?.should be
+      page.live?.should be
     end
   end
 
