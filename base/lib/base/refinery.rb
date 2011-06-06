@@ -7,7 +7,7 @@ module Refinery
   autoload :Version, File.expand_path('../../refinery/version', __FILE__)
 
   class << self
-    attr_accessor :base_cache_key, :gems, :rescue_not_found, :root, :roots, :s3_backend
+    attr_accessor :base_cache_key, :gems, :rescue_not_found, :root, :roots, :s3_backend, :editor
 
     def base_cache_key
       @base_cache_key ||= :refinery
@@ -28,6 +28,11 @@ module Refinery
 
       # Give stern talking to.
       warn warning
+    end
+
+    def editor=(editor_class)
+      raise "#{@editor.name} loaded already. You can't load editor twice. (#{editor_class.name})." if @editor
+      @editor ||= editor_class
     end
 
     def engines

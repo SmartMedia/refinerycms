@@ -69,9 +69,7 @@ var wymeditor_boot_options = $.extend({
     ,{'name': 'ToggleHtml', 'title': 'HTML', 'css': 'wym_tools_html'}
   ]
 
-  ,toolsHtml: "<ul class='wym_tools wym_section wym_buttons'>"
-                + WYMeditor.TOOLS_ITEMS
-              + "</ul>"
+  ,toolsHtml: "<ul class='wym_tools wym_section wym_buttons'>" + WYMeditor.TOOLS_ITEMS + WYMeditor.CLASSES + "</ul>"
 
   ,toolsItemHtml:
     "<li class='" + WYMeditor.TOOL_CLASS + "'>"
@@ -80,14 +78,12 @@ var wymeditor_boot_options = $.extend({
       + "</a>"
     + "</li>"
 
-  , classesHtml: "<ul class='wym_classes_container wym_section wym_buttons'>"
-                   + "<li class='wym_tools_class'>"
-                   + "<a href='#' name='" + WYMeditor.APPLY_CLASS + "' title='"+ WYMeditor.APPLY_CLASS +"' class='no-tooltip'>"
-                     + WYMeditor.APPLY_CLASS
-                   + "</a>"
-                   + "<ul class='wym_classes wym_classes_hidden'>" + WYMeditor.CLASSES_ITEMS + "</ul>"
-                  + "</li>"
-                + "</ul>"
+  , classesHtml: "<li class='wym_tools_class'>"
+                 + "<a href='#' name='" + WYMeditor.APPLY_CLASS + "' title='"+ WYMeditor.APPLY_CLASS +"' class='no-tooltip'>"
+                   + WYMeditor.APPLY_CLASS
+                 + "</a>"
+                 + "<ul class='wym_classes wym_classes_hidden'>" + WYMeditor.CLASSES_ITEMS + "</ul>"
+                + "</li>"
 
   , classesItemHtml: "<li><a href='#' name='"+ WYMeditor.CLASS_NAME + "'>"+ WYMeditor.CLASS_TITLE+ "</a></li>"
   , classesItemHtmlMultiple: "<li class='wym_tools_class_multiple_rules'>"
@@ -107,7 +103,6 @@ var wymeditor_boot_options = $.extend({
     + "<div class='wym_area_top clearfix'>"
       + WYMeditor.CONTAINERS
       + WYMeditor.TOOLS
-      + WYMeditor.CLASSES
     + "</div>"
     + "<div class='wym_area_main'>"
       + WYMeditor.HTML

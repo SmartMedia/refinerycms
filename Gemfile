@@ -42,11 +42,15 @@ end
 # END REFINERY CMS ============================================================
 
 # REFINERY CMS DEVELOPMENT ====================================================
-
+gem 'spork'
 # END REFINERY CMS DEVELOPMENT =================================================
 
 # USER DEFINED
 
+# Select one editor
+gem 'refinerycms-wymeditor'
+# gem 'refinerycms-ckeditor'
+  
 # Specify additional Refinery CMS Engines here (all optional):
 # gem 'refinerycms-inquiries',    '~> 1.0'
 # gem "refinerycms-news",         '~> 1.2'
