@@ -37,13 +37,10 @@ group :development, :test do
   # Then, run 'rails generate refinerycms_testing' which will copy its support files.
   # Finally, run 'rake' to run the tests.
   gem 'refinerycms-testing',    '~> 1.0.0'
+  #gem 'spork'
 end
 
 # END REFINERY CMS ============================================================
-
-# REFINERY CMS DEVELOPMENT ====================================================
-gem 'spork'
-# END REFINERY CMS DEVELOPMENT =================================================
 
 # USER DEFINED
 
