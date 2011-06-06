@@ -28,6 +28,8 @@ class PagesController < ApplicationController
     else
       error_404
     end
+
+    render @page.template if @page.template
   end
 
 end

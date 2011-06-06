@@ -10,6 +10,7 @@ Feature: Visit Pages
     And I have a page titled "About"
     And I have a page titled "ä ö ü spéciål chåråctÉrs"
     And I have a page titled "Hidden"
+    And I have a page titled "Special" with template "test"
     And the page titled "Hidden" is a child of Home
     And the page titled "Hidden" is not shown in the menu
 
@@ -26,6 +27,14 @@ Feature: Visit Pages
     Then I should see "Home"
     And I should see "About"
     And I should see "About" within ".selected > a"
+
+  @pages-templates
+  Scenario: Page should render own template
+    When I go to the page titled "Special"
+    Then I should see "Home"
+    And I should see "Special"
+    And I should see "Special" within ".selected > a"
+    And I should see "Own template"
 
   @pages-visit-special
   Scenario: Special Characters Title
@@ -59,3 +68,4 @@ Feature: Visit Pages
     And the page titled "About" is set to skip to first child
     When I go to the page titled "About"
     Then I should see "Child Page" within ".selected * > .selected a"
+    

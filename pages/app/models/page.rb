@@ -2,6 +2,11 @@ require 'globalize3'
 
 class Page < ActiveRecord::Base
 
+  # Find all templates
+  def self.templates
+    [Rails.root, Refinery::Plugins.registered.pathnames].flatten.uniq.map{|p| p.join('app', 'views', 'pages', '*html*')}.map(&:to_s).map{ |p| Dir[p] }.select {|p| p.count > 0}.flatten.map{|f| File.basename(f).split('.').first}
+  end
+
   # when a dialog pops up to link to a page, how many pages per page should there be
   PAGES_PER_DIALOG = 14
 
@@ -52,10 +57,11 @@ class Page < ActiveRecord::Base
                   :parts_attributes, :browser_title, :meta_description,
                   :custom_title_type, :parent_id, :custom_title,
                   :created_at, :updated_at, :page_id, :publish_from,
-                  :publish_to
+                  :publish_to, :template
 
   attr_accessor :locale # to hold temporarily
   validates :title, :presence => true
+  #validates :template, :inclusion => { :in => Page.templates }
 
   # Docs for acts_as_nested_set https://github.com/collectiveidea/awesome_nested_set
   acts_as_nested_set :dependent => :destroy # rather than :delete_all
@@ -305,6 +311,8 @@ class Page < ActiveRecord::Base
   end
 
   class << self
+    
+
     # Accessor to find out the default page parts created for each new page
     def default_parts
       RefinerySetting.find_or_set(:default_page_parts, ["Body", "Side Body"])

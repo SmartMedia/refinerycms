@@ -22,6 +22,16 @@ Feature: Manage Pages
     Then I should see "'Pickles are Cucumbers Soaked in Evil' was successfully added."
     And I should have 1 page
 
+  @pages-templates
+  Scenario: Create Valid Page with own template
+    When I go to the list of pages
+    And I follow "Add new page"
+    And I fill in "Title" with "Aotearoa is great country"
+    And I select "test" from "page_template"
+    And I press "Save"
+    Then I should see "'Aotearoa is great country' was successfully added."
+    And I should have 1 page with own template
+
   Scenario: Create Invalid Page (without title)
     When I go to the list of pages
     And I follow "Add new page"

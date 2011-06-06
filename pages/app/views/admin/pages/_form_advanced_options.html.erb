@@ -90,6 +90,16 @@
       </span>
       <%= f.datetime_select :publish_to %>
     </div>
+
+    <div class='field'>
+      <span class='label_with_help'>
+        <%= f.label :template, t('.template_title'),
+                    :id => 'page_template_heading' %>
+        <%= refinery_help_tag t('.template_help') %>
+      </span>
+      <%= f.select :template, page_templates_collection,
+                   :include_blank => true %>
+    </div>
   </div>
 
   <%= render :partial => "form_advanced_options_seo",

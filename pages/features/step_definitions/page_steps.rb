@@ -65,9 +65,21 @@ When /^I fill in "([^"]*)" with next week date$/ do |field|
 end
 
 Then /^I should have (\d+) unpublished page?$/ do |count|
-  Page.unpublished.count == count
+  Page.unpublished.count == count.to_i
 end
 
 Then /^I should have (\d+) published page?$/ do |count|
-  Page.published.count == count
+  Page.published.count == count.to_i
 end
+
+Given /^I have a page titled "([^"]*)" with template "([^"]*)"$/ do |title, template|
+  page = Page.create!(:title => title, :template => template)
+  page.parts.create(:name => 'test', :body => 'test')
+  page
+end
+
+Then /^I should have (\d+) page with own template$/ do |count|
+  Page.where('template IS NOT NULL').count == count.to_i
+end
+
+
