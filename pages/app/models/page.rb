@@ -51,7 +51,8 @@ class Page < ActiveRecord::Base
                   :skip_to_first_child, :position, :show_in_menu, :draft,
                   :parts_attributes, :browser_title, :meta_description,
                   :custom_title_type, :parent_id, :custom_title,
-                  :created_at, :updated_at, :page_id
+                  :created_at, :updated_at, :page_id, :publish_from,
+                  :publish_to
 
   attr_accessor :locale # to hold temporarily
   validates :title, :presence => true
@@ -248,6 +249,17 @@ class Page < ActiveRecord::Base
     not draft?
   end
 
+  def published?
+    if publish_from and publish_to
+      (publish_from..publish_to).include?(Time.now)
+    elsif publish_from
+      Time.now > publish_from
+    elsif publish_to
+      Time.now < publish_to
+    else
+      true
+    end
+  end
   # Return true if this page can be shown in the navigation.
   # If it's a draft or is set to not show in the menu it will return false.
   def in_menu?

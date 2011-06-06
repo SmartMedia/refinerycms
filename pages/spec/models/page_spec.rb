@@ -147,6 +147,32 @@ describe Page do
     end
   end
 
+  context "shloud be publishable" do
+    it "in future" do
+      page.publish_from = Time.now + 1.day
+      page.publish_to = nil
+      page.published?.should_not be
+    end
+
+    it "only to date" do
+      page.publish_from = nil
+      page.publish_to = Time.now - 1.day
+      page.published?.should_not be
+    end
+
+    it "in range" do
+      page.publish_from = Time.now - 1.day
+      page.publish_to = Time.now + 1.day
+      page.published?.should be
+    end
+
+    it "without limitation" do
+      page.publish_from = nil
+      page.publish_to = nil
+      page.published?.should be
+    end
+  end
+
   context "should add url suffix" do
     let(:reserved_word) { Page.friendly_id_config.reserved_words.last }
     let(:page_with_reserved_title) do
