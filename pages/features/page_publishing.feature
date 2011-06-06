@@ -2,7 +2,7 @@
 Feature: Manage Pages
   In order to control the content on my website
   As an administrator
-  I want to create and manage pages
+  I want to create and publish pages in time ranges
 
   Background:
     Given I am a logged in refinery user
