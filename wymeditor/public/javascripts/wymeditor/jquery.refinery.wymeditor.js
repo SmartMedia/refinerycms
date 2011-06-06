@@ -5238,3 +5238,4 @@ WYMeditor.WymClassSafari.prototype.getTagForStyle = function(style) {
 RegExp.escape = function(text) {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 };
+
