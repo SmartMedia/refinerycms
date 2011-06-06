@@ -72,6 +72,24 @@
       <%= f.label :show_in_menu, t('.show_in_menu_description'),
                   :class => "stripped" %>
     </div>
+
+    <div class='field'>
+      <span class='label_with_help'>
+        <%= f.label :publish_from, t('.publish_from_title'),
+                    :id => 'page_publish_from_heading' %>
+        <%= refinery_help_tag t('.publish_from_help') %>
+      </span>
+      <%= f.datetime_select :publish_from %>
+    </div>
+    
+    <div class='field'>
+      <span class='label_with_help'>
+        <%= f.label :publish_to, t('.publish_to_title'),
+                    :id => 'page_publish_to_heading' %>
+        <%= refinery_help_tag t('.publish_to_help') %>
+      </span>
+      <%= f.datetime_select :publish_to %>
+    </div>
   </div>
 
   <%= render :partial => "form_advanced_options_seo",

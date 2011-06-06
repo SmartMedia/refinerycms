@@ -106,6 +106,17 @@ class Page < ActiveRecord::Base
   scope :live, where(:draft => false)
   scope :by_title, proc {|t| with_globalize(:title => t)}
 
+  # If you're using a named scope that includes a changing variable you need to wrap it in a lambda
+  # This avoids the query being cached thus becoming unaffected by changes (i.e. Time.now is constant)
+  scope :unpublished, lambda {
+    pages = Arel::Table.new(self.table_name)
+    where((pages[:publish_from].lt(Time.now)).or(pages[:publish_to].gt(Time.now)))
+  }
+  scope :published, lambda {
+    pages = Arel::Table.new(self.table_name)
+    where(pages[:publish_to].lt(Time.now)).where(pages[:publish_from].gt(Time.now))
+  }
+
   # Shows all pages with :show_in_menu set to true, but it also
   # rejects any page that has not been translated to the current locale.
   # This works using a query against the translated content first and then

@@ -59,3 +59,15 @@ end
 Given /^I have frontend locales "?([^\"]*)"?/ do |locales|
   RefinerySetting.set(:i18n_translation_frontend_locales, {:value => locales.split(', '), :scoping => 'refinery'})
 end
+
+When /^I fill in "([^"]*)" with next week date$/ do |field|
+  When %{I select "#{Time.now + 1.week}" as the "page_#{field.downcase.split(' ').join('_')}" datetime}
+end
+
+Then /^I should have (\d+) unpublished page?$/ do |count|
+  Page.unpublished.count == count
+end
+
+Then /^I should have (\d+) published page?$/ do |count|
+  Page.published.count == count
+end

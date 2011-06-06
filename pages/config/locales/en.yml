@@ -55,6 +55,10 @@ en:
         show_in_menu_title: Show in menu
         show_in_menu_description: Display this page in the site menu
         show_in_menu_help: Uncheck this box if you want to remove a page from your site menu. This can be handy if you have a page you want to link people to directly but don&apos;t want to show the page in the menu.
+        publish_from_title: Publish from
+        publish_from_help: If you want to limit this page to be visible only from specified date specify date here.
+        publish_to_title: Publish to
+        publish_to_help: If you want to limit this page to be visible only to specified date specify date here.
         save_as_draft: Save as Draft
         skip_to_first_child: Skip top-level page
         skip_to_first_child_label: Redirect visitors to the first sub-level page.
