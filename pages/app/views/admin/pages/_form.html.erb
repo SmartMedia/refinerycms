@@ -17,6 +17,14 @@
     <%= f.text_field :title, :class => "larger widest" %>
   </div>
 
+  <div class='field'>
+    <span class='label_with_help'>
+      <%= f.label :slug_url, t('.slug_url_title') %>
+      <%= refinery_help_tag t('.slug_url_help') %>
+    </span>
+    <%= f.text_field :slug_url, :class => "larger" %>
+  </div>
+
   <%= render :partial => "form_fields_after_title",
              :locals => {
                :f => f

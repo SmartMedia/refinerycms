@@ -10,7 +10,8 @@ class TranslatePagePlugin < ActiveRecord::Migration
       :title => :string,
       :meta_keywords => :string,
       :meta_description => :text,
-      :browser_title => :string
+      :browser_title => :string,
+      :slug_url => :string
     }, {
       :migrate_data => true
     })

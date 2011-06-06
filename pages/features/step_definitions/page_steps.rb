@@ -82,4 +82,7 @@ Then /^I should have (\d+) page with own template$/ do |count|
   Page.where('template IS NOT NULL').count == count.to_i
 end
 
+Then /^I should have (\d+) page with slug "([^"]*)"$/ do |count, slug|
+  Page.find_all_by_slug_url(slug).count == count
+end
 

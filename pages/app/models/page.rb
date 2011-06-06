@@ -6,6 +6,11 @@ class Page < ActiveRecord::Base
   def self.templates
     [Rails.root, Refinery::Plugins.registered.pathnames].flatten.uniq.map{|p| p.join('app', 'views', 'pages', '*html*')}.map(&:to_s).map{ |p| Dir[p] }.select {|p| p.count > 0}.flatten.map{|f| File.basename(f).split('.').first}
   end
+  
+  def update_slug_url
+    # TODO pls better
+    self.slug_url  = title unless slug_url
+  end
 
   # when a dialog pops up to link to a page, how many pages per page should there be
   PAGES_PER_DIALOG = 14
@@ -17,11 +22,11 @@ class Page < ActiveRecord::Base
   PATH_SEPARATOR = " - "
 
   if self.respond_to?(:translates)
-    translates :title, :custom_title, :meta_keywords, :meta_description, :browser_title, :include => :seo_meta
+    translates :title, :custom_title, :meta_keywords, :meta_description, :browser_title, :slug_url, :include => :seo_meta
 
     # Set up support for meta tags through translations.
     if defined?(::Page::Translation)
-      attr_accessible :title
+      attr_accessible :title, :slug_url
       # set allowed attributes for mass assignment
       ::Page::Translation.send :attr_accessible, :browser_title, :meta_description,
                                                  :meta_keywords, :locale
@@ -46,7 +51,8 @@ class Page < ActiveRecord::Base
         after_save proc {|m| m.translation.save}
       end
     end
-
+    
+    before_validation :update_slug_url
     before_create :ensure_locale, :if => proc { |c|
       ::Refinery.i18n_enabled?
     }
@@ -61,13 +67,14 @@ class Page < ActiveRecord::Base
 
   attr_accessor :locale # to hold temporarily
   validates :title, :presence => true
+  validates :slug_url, :presence => true
   #validates :template, :inclusion => { :in => Page.templates }
 
   # Docs for acts_as_nested_set https://github.com/collectiveidea/awesome_nested_set
   acts_as_nested_set :dependent => :destroy # rather than :delete_all
 
   # Docs for friendly_id http://github.com/norman/friendly_id
-  has_friendly_id :title, :use_slug => true,
+  has_friendly_id :slug_url, :use_slug => true,
                   :default_locale => (::Refinery::I18n.default_frontend_locale rescue :en),
                   :reserved_words => %w(index new session login logout users refinery admin images wymiframe),
                   :approximate_ascii => RefinerySetting.find_or_set(:approximate_ascii, false, :scoping => "pages"),

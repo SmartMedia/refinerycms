@@ -32,6 +32,16 @@ Feature: Manage Pages
     Then I should see "'Aotearoa is great country' was successfully added."
     And I should have 1 page with own template
 
+  @pages-slugs
+  Scenario: Create Valid Page with own slug
+    When I go to the list of pages
+    And I follow "Add new page"
+    And I fill in "Title" with "Aotearoa is great country"
+    And I fill in "SLUG" with "new-zealand-is-awesome"
+    And I press "Save"
+    Then I should see "'Aotearoa is great country' was successfully added."
+    And I should have 1 page with slug "new-zealand-is-awesome"
+
   Scenario: Create Invalid Page (without title)
     When I go to the list of pages
     And I follow "Add new page"
