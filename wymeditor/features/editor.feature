@@ -2,7 +2,7 @@
 Feature: Test Wymeditor
   In order to see if wymeditor is loaded properly
   As an administrator
-  I want to verify create page
+  I want to verify WYMeditor is loaded
   
   Background:
     Given I am a logged in refinery user
