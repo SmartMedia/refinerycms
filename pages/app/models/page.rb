@@ -12,6 +12,14 @@ class Page < ActiveRecord::Base
     self.slug_url  = title unless slug_url
   end
 
+  def slug_url_from_title
+    if respond_to?(:slug_url)
+      slug_url.blank? ? title : slug_url
+    else
+      title
+    end
+  end
+
   # when a dialog pops up to link to a page, how many pages per page should there be
   PAGES_PER_DIALOG = 14
 
@@ -67,14 +75,14 @@ class Page < ActiveRecord::Base
 
   attr_accessor :locale # to hold temporarily
   validates :title, :presence => true
-  validates :slug_url, :presence => true
+  #validates :slug_url, :presence => true
   #validates :template, :inclusion => { :in => Page.templates }
 
   # Docs for acts_as_nested_set https://github.com/collectiveidea/awesome_nested_set
   acts_as_nested_set :dependent => :destroy # rather than :delete_all
 
   # Docs for friendly_id http://github.com/norman/friendly_id
-  has_friendly_id :slug_url, :use_slug => true,
+  has_friendly_id :slug_url_from_title, :use_slug => true,
                   :default_locale => (::Refinery::I18n.default_frontend_locale rescue :en),
                   :reserved_words => %w(index new session login logout users refinery admin images wymiframe),
                   :approximate_ascii => RefinerySetting.find_or_set(:approximate_ascii, false, :scoping => "pages"),
