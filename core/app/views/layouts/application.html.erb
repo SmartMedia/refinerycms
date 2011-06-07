@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <%= render :partial => "/shared/html_tag" %>
   <% site_bar = render(:partial => "/shared/site_bar", :locals => {:head => true}) -%>
+  <% content_for :stylesheets, stylesheet_link_tag("jquery.lightbox-0.5.css") %>
   <%= render :partial => "/shared/head" %>
   <body>
     <%= site_bar -%>
@@ -17,5 +18,8 @@
       </footer>
     </div>
     <%= render :partial => "/shared/javascripts" %>
+  <%= jquery_include_tags -%>
+  <%= javascript_include_tag('jquery.lightbox-0.5.js') %>
+  <%= javascript_include_tag('application.js') %>
   </body>
 </html>
