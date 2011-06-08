@@ -28,7 +28,6 @@ REFINERYCMS.plugin.Seo.decorator = { };
 var cms = REFINERYCMS;
 
 REFINERYCMS.namespace('I18n.translations.cs.refinerycms.plugin.seo');
-REFINERYCMS.namespace('I18n.translations.en.refinerycms.plugin.seo');
 
 I18n.translations.cs.refinerycms.plugin.seo = {
 	'seo_report' : 'SEO report',
@@ -45,6 +44,8 @@ I18n.translations.cs.refinerycms.plugin.seo = {
 		'title' : 'Statistická tabulka'
 	},
 	'validators' : {
+		'empty_meta_keywords' : 'Nejsou definováná žádná klíčová slova',
+		'page_not_found' : 'Stránka nebyla zatím uložena',
 		'filled' : 'políčko musí být vyplněné',
 		'min_words_count' : 'minimální počet slov {{arg}}',
 		'min_word_length' : 'minimální délka slova je {{arg}} znaků',
@@ -59,38 +60,6 @@ I18n.translations.cs.refinerycms.plugin.seo = {
 		'browser_title' : 'Titulek prohlížeče'
 	}
 };
-
-I18n.translations.en.refinerycms.plugin.seo = {
-	'seo_report' : 'SEO report',
-	'run_validator' : 'Validate inputs',
-	'run_highlighter' : 'Highlight keywords',
-	'run_analyzer' : 'Analyse page',
-	'close_popup' : 'Close',
-	'highlighted_keywords_on_page' : 'Highlight keywords on inputs',
-	'part' : {
-		'title' : 'Title',
-		'page_body' : 'Body'
-	}
-	,
-	'analyse_table' : {
-		'title' : 'Statistic table'
-	},
-	'validators' : {
-		'filled' : 'Input box must be filled',
-		'min_words_count' : 'Min count words {{arg}}',
-		'min_word_length' : 'Min length of word is {{arg}} chars',
-		'min_length' : 'Minimal length {{arg}} chars',
-		'max_length' : 'Maximal length {{arg}} chars',
-		'function_not_exists' : 'Validation function {{fnc}} not exists.',
-		'state_rule_false' : '{{rule}}',
-		'state_ok' : 'Everything\'s Alright',
-		'state_error' : 'Please ensure the proper completion of attributes',
-		'meta_tag_keywords' : 'meta tag keywords',
-		'meta_tag_description' : 'meta tag description',
-		'browser_title' : 'Browser title'
-	}
-};
-
 
 /**
  * Class for handling everything between page and snippets
@@ -304,10 +273,14 @@ REFINERYCMS.plugin.Seo.prototype = {
 			ad = REFINERYCMS.plugin.Seo.analyzeDecorator,
 			acfg = {};
 
-			
+		acfg.document = data.document || '';
+		
 		acfg.pkw = this.get_keywords();
-		acfg.fade = true;
+		acfg.fade = true;	
 		analyzer.init(acfg);
+		
+		acfg.data = analyzer.getReport();
+		
 		ad.render(acfg);
 	},
 
@@ -322,24 +295,24 @@ REFINERYCMS.plugin.Seo.prototype = {
 			hd = REFINERYCMS.plugin.Seo.higlightDecorator;
 
 		// required
-		title_text = {'label' : I18n.t('refinerycms.plugin.seo.part.title', {defaultValue : 'Title'}), 'body' : this.get_highlighted_keywords($('#page_title').val()) };
-		page_body = {'label' : I18n.t('refinerycms.plugin.seo.part.page_body', {defaultValue : 'Page body'}), 'body' : this.get_highlighted_keywords($('#page_parts_attributes_0_body').val()) };
+		title_text = {'label' : I18n.t('refinerycms.plugin.seo.part.title', {defaultValue : 'Title'}), 'body' : this.get_highlighted_keywords($('#page_title').val())};
+		page_body = {'label' : I18n.t('refinerycms.plugin.seo.part.page_body', {defaultValue : 'Page body'}), 'body' : this.get_highlighted_keywords($('#page_parts_attributes_0_body').val())};
 
 		texts = [title_text, page_body];
 
 		// optional
 		if ($('#page_parts_attributes_1_body').length > 0  &&  $('#page_parts_attributes_1_body').val() !== '') {
-			page_sidebar = {'label' : 'Page sidebar', 'body' : this.get_highlighted_keywords($('#page_parts_attributes_1_body').val()) };
+			page_sidebar = {'label' : 'Page sidebar', 'body' : this.get_highlighted_keywords($('#page_parts_attributes_1_body').val())};
 			texts.push(page_sidebar);
 		}
 
 		if ($('#page_browser_title').length > 0 && $('#page_browser_title').val() !== '') {
-			browser_title_text = {'label' : 'Browser title', 'body' : this.get_highlighted_keywords($('#page_browser_title').val()) };
+			browser_title_text = {'label' : 'Browser title', 'body' : this.get_highlighted_keywords($('#page_browser_title').val())};
 			texts.push(browser_title_text);
 		}
 
 		if ($('#page_meta_description').length > 0 && $('#page_meta_description').val() !== '') {
-			meta_desc_text = {'label' : 'Meta description', 'body' : this.get_highlighted_keywords($('#page_meta_description').val()) };
+			meta_desc_text = {'label' : 'Meta description', 'body' : this.get_highlighted_keywords($('#page_meta_description').val())};
 			texts.push(meta_desc_text);
 		}
 
@@ -473,15 +446,15 @@ REFINERYCMS.plugin.Seo.analyzers = {
 			pkw = this.pkw,
 			report = this.report;
 		d = this.data;
-				
+		
 		for (elm_key in d) {
 			j = d[elm_key].length;
 			report[elm_key] = report[elm_key] || {};
-
+			report[elm_key]['pkw'] = report[elm_key]['pkw'] || [];
+		
 			while (j--) {
 				t = d[elm_key][j];
 				k = 0;
-				report[elm_key]['pkw'] = report[elm_key]['pkw'] || [];
 				
 				while (k < pkw.length) {
 					rg1 = t.match(new RegExp('(' + this.pkw[k] + ')', 'ig'));
@@ -489,16 +462,16 @@ REFINERYCMS.plugin.Seo.analyzers = {
 					report[elm_key]['pkw'][k] = rg1 ? report[elm_key]['pkw'][k] + rg1.length : report[elm_key]['pkw'][k];						
 					k++;
 				}
-
 			}
 		}
+		
 		
 		this.report = report;
 	},
 	
 	process: function () {
 		var that = this;
-		
+
 		if (that.document) {
 			var d = that.document;
 			tmp1 = that.document.match(/<h1>(.*)<\/h1>/ig);
@@ -536,7 +509,9 @@ REFINERYCMS.plugin.Seo.analyzers = {
 		this.config = cfg || {};
 		this.pkw = cfg.pkw || [];
 		this.wkw = cfg.wkw || [];
-		this.document = cfg.doc || '';
+		this.document = cfg.document || '';
+		this.process();
+		this.count_keywords();
 	}
 };
 
@@ -567,7 +542,7 @@ REFINERYCMS.plugin.Seo.decorator = {
 		header.append(
 			$('<a />', {
 				'id': 'run-seo-validator',
-				'text': I18n.t('refinerycms.plugin.seo.run_validator', {defaultValue : 'Validate inputs'}),
+				'text': I18n.t('refinerycms.plugin.seo.run_validator', {defaultValue : 'Validate'}),
 				'class': 'button'
 			})
 		);
@@ -583,7 +558,7 @@ REFINERYCMS.plugin.Seo.decorator = {
 		header.append(
 			$('<a />', {
 				'id': 'run-seo-analyzer',
-				'text': I18n.t('refinerycms.plugin.seo.run_analyzer', {defaultValue : 'Analyse page'}),
+				'text': I18n.t('refinerycms.plugin.seo.run_analyzer', {defaultValue : 'Analýza'}),
 				'class': 'button'
 			})
 		);
@@ -627,7 +602,6 @@ REFINERYCMS.plugin.Seo.decorator = {
 			'html': '&nbsp;'
 		});
 	},
-
 
 	buildAnalysisContent: function () {
 		var that = this,
@@ -676,8 +650,8 @@ REFINERYCMS.plugin.Seo.decorator = {
 						elm_par.append(elm_seo_error_holder);
 					}
 
-//						defaultValue: "{{rule}} in  {{elm}} is false.",
 					msg = I18n.t('refinerycms.plugin.seo.validators.state_rule_false', {
+						defaultValue: "{{rule}} in  {{elm}} is false.",
 						rule: I18n.t('refinerycms.plugin.seo.validators.' + rule, {defaultValue : rule, arg : that._seo.validation_rules[elm_key][rule]}),
 						elm:  I18n.t('refinerycms.plugin.seo.validators.' + elm_key, {defaultValue : elm_key})
 					});
@@ -967,6 +941,10 @@ REFINERYCMS.plugin.Seo.analyzeDecorator = {
 		var t = '',
 			th = '',
 			tb = '',
+			h1cls = '',
+			h2cls = '',
+			acls = '',
+			acnt = 0,
 			cfg = this.cfg;
 		
 		t = $('<table />');
@@ -976,12 +954,20 @@ REFINERYCMS.plugin.Seo.analyzeDecorator = {
 		t.append(th);
 		
 		tb = $('<tbody />');
-		
+				
 		if (cfg.pkw) {
+		
 			for (var i = 0; i < cfg.pkw.length; i++ ) {
+				h1cls = (cfg.data['h1'] && cfg.data['h1']['pkw'] && cfg.data['h1']['pkw'][i] && cfg.data['h1']['pkw'][i] > 0) ? 'ok' : 'unsufficient';
+				h2cls = (cfg.data['h2'] && cfg.data['h2']['pkw'] && cfg.data['h2']['pkw'][i] && cfg.data['h2']['pkw'][i] > 0) ? 'ok' : 'unsufficient';
+				acls = (cfg.data['a'] && cfg.data['a']['pkw'] && cfg.data['a']['pkw'][i] && cfg.data['a']['pkw'][i] > 0) ? 'ok' : 'unsufficient';
+				acnt = (acls === 'ok') ? cfg.data['a']['pkw'][i] : 0;
 				tb.html(
 					tb.html() + 
-					'<tr><th>' + cfg.pkw[i] + '</th><td>' + 1 + '</td><td>' + 2 + '</td><td>' + 3 + '</td></tr>'
+					'<tr><th>' + cfg.pkw[i] + '</th>' +
+					'<td class="' + h1cls + '">&nbsp;</td>' +
+					'<td class="' + h2cls + '">&nbsp;</td>' +
+					'<td class="' + acls + '">' + acnt + '</td></tr>'
 				);
 			}
 		}
