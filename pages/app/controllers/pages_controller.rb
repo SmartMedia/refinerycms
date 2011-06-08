@@ -29,7 +29,7 @@ class PagesController < ApplicationController
       error_404
     end
 
-    render @page.template if @page.template
+    render @page.template unless @page.template.blank?
   end
 
 end
