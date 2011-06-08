@@ -447,7 +447,7 @@ REFINERYCMS.plugin.Seo.analyzers = {
 			report = this.report;
 		d = this.data;
 		
-		for (elm_key in d) {
+		for (var elm_key in d) {
 			j = d[elm_key].length;
 			report[elm_key] = report[elm_key] || {};
 			report[elm_key]['pkw'] = report[elm_key]['pkw'] || [];
@@ -474,12 +474,12 @@ REFINERYCMS.plugin.Seo.analyzers = {
 
 		if (that.document) {
 			var d = that.document;
-			tmp1 = that.document.match(/<h1>(.*)<\/h1>/ig);
-			tmp2 = that.document.match(/<h2>(.*)<\/h2>/ig);
-			tmp3 = that.document.match(/<p>(.*)<\/p>/ig);
-			tmp4 = that.document.match(/<a(.*)<\/a>/ig);
-			tmp5 = that.document.match(/<body>(.*)<\/body>/ig);
-			tmp6 = that.document.match(/<title(.*)<\/title>/ig);
+			var tmp1 = that.document.match(/<h1>(.*)<\/h1>/ig);
+			var tmp2 = that.document.match(/<h2>(.*)<\/h2>/ig);
+			var tmp3 = that.document.match(/<p>(.*)<\/p>/ig);
+			var tmp4 = that.document.match(/<a(.*)<\/a>/ig);
+			var tmp5 = that.document.match(/<body>(.*)<\/body>/ig);
+			var tmp6 = that.document.match(/<title(.*)<\/title>/ig);
 			
 			that.data['h1'] = that.sanitize_html_elm_data(tmp1);
 			that.data['h2'] = that.sanitize_html_elm_data(tmp2);

@@ -102,7 +102,7 @@ $(function () {
 					  wym.update();
 					});
 				} catch (err) {
-					alert(err);
+					// alert(err);
 				}
 
 				if (v['meta_tag_keywords']['filled']) {
