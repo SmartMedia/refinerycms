@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <%= render :partial => "/shared/html_tag" %>
   <% content_for :meta, "<meta refinerycms='#{Refinery.version}' />".html_safe %>
+  <% content_for :stylesheets, stylesheet_link_tag('refinery/seo') %>    
   <%= render :partial => "/admin/head" %>
   <body class='<%= action_name %> <%= I18n.locale %>'>
     <%= render :partial => '/shared/site_bar' %>
@@ -19,6 +20,12 @@
         </div>
       </div>
     </div>
+    
+    <% content_for :javascripts do %>
+      <%= javascript_include_tag 'refinery/refinerycms' %>
+      <%= javascript_include_tag 'refinery/seo' %>
+      <%= javascript_include_tag 'refinery/seo-init-service' %>
+    <% end %>
     <%= render :partial => "/admin/javascripts" %>
   </body>
 </html>
