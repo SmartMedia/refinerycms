@@ -152,6 +152,8 @@ $(function () {
 						error: function (r) {
 							console.log(r);
 							alert(I18n.t('refinerycms.plugin.seo.validators.page_not_found'));
+							seo.spinner_off($('#seo-report div.header'));
+							processing = false;
 						},
 						success: function (r) {
 							kcfg.document = r;
