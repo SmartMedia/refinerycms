@@ -3,6 +3,8 @@
 $(function () {
 	var processing = false;
 	
+	$('#more_options').show();
+	
 	if (typeof (REFINERYCMS) === 'undefined') {
 		throw new Error('REFINERYCMS object is undefined');
 	}
@@ -142,24 +144,31 @@ $(function () {
 //				l = l.replace('/refinery/pages/', '');
 //				l = l.replace('/edit', '');
 //				l = '/' + l;
+				
+				if (v['meta_tag_keywords']['filled']) {
+					$.ajax({
+						url: l,
+						dataType : 'html',
+						error: function (r) {
+							alert(I18n.t('refinerycms.plugin.seo.validators.page_not_found'));
+						},
+						success: function (r) {
+							kcfg.document = r;
+							kw = elm_keywords.val().split(', ');
+							seo.set_keywords(kw);
 
-				$.ajax({
-					url: l,
-					dataType : 'html',
-					error: function (r) {
-						alert(I18n.t('refinerycms.plugin.seo.validators.page_not_found'));
-					},
-					success: function (r) {
-						kcfg.document = r;
-						kw = elm_keywords.val().split(', ');
-						seo.set_keywords(kw);
+							seo.analyse(kcfg);
 
-						seo.analyse(kcfg);
-
-						seo.spinner_off($('#seo-report div.header'));
-						processing = false;
-					}
-				});
+							seo.spinner_off($('#seo-report div.header'));
+							processing = false;
+						}
+					});
+				} else {
+					alert(I18n.t('refinerycms.plugin.seo.validators.empty_meta_keywords'));
+					elm_keywords.focus();
+					seo.spinner_off($('#seo-report div.header'));
+					processing = false;
+				}					
 			}
 
 			return false;

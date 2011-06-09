@@ -15,6 +15,25 @@
 
 'use strict';
 
+function cleanArray(actual){
+  var newArray = new Array();
+  for(var i = 0; i<actual.length; i++){
+      if (actual[i]){
+        newArray.push(actual[i]);
+    }
+  }
+  return newArray;
+}
+
+function calcpp (a, b) {
+	if (a == 0 || b == 0) {
+		return 0;
+	}
+	
+	return Math.ceil((a / b ) * 100);
+}
+
+
 REFINERYCMS.namespace('REFINERYCMS.plugin.Seo');
 
 REFINERYCMS.plugin.Seo = function (config) {
@@ -28,6 +47,7 @@ REFINERYCMS.plugin.Seo.decorator = { };
 var cms = REFINERYCMS;
 
 REFINERYCMS.namespace('I18n.translations.cs.refinerycms.plugin.seo');
+REFINERYCMS.namespace('I18n.translations.en.refinerycms.plugin.seo');
 
 I18n.translations.cs.refinerycms.plugin.seo = {
 	'seo_report' : 'SEO report',
@@ -35,7 +55,39 @@ I18n.translations.cs.refinerycms.plugin.seo = {
 	'run_highlighter' : 'Zvýraznění',
 	'run_analyzer' : 'Analýza',
 	'close_popup' : 'Zavřít',
-	'highlighted_keywords_on_page' : 'Zvýrazněné klíčové slova na stránce',
+	'highlighted_keywords_on_page' : 'Zvýrazněné klíčové slova v atributech',
+	'part' : {
+		'title' : 'Název',
+		'page_body' : 'Tělo'
+	},
+	'analyse_table' : {
+		'title' : 'Statistická tabulka'
+	},
+	'validators' : {
+		'empty_meta_keywords' : 'Nejsou definováná žádná klíčová slova',
+		'page_not_found' : 'Stránka nebyla zatím uložena',
+		'filled' : 'políčko musí být vyplněné',
+		'min_words_count' : 'minimální počet slov {{arg}}',
+		'min_word_length' : 'minimální délka slova je {{arg}} znaků',
+		'min_length' : 'minimální délka {{arg}} znaků',
+		'max_length' : 'maximální délka {{arg}} znaků',
+		'function_not_exists' : 'Validační funkce {{fnc}} nenalezena.',
+		'state_rule_false' : '{{rule}}',
+		'state_ok' : 'Všechno v pořádku',
+		'state_error' : 'Prosím zkontroluj správné vyplnění atributů',
+		'meta_tag_keywords' : 'meta tag klíčové slova',
+		'meta_tag_description' : 'meta tag description',
+		'browser_title' : 'Titulek prohlížeče'
+	}
+};
+
+I18n.translations.en.refinerycms.plugin.seo = {
+	'seo_report' : 'SEO report',
+	'run_validator' : 'Validace',
+	'run_highlighter' : 'Zvýraznění',
+	'run_analyzer' : 'Analýza',
+	'close_popup' : 'Zavřít',
+	'highlighted_keywords_on_page' : 'Zvýrazněné klíčové slova v atributech',
 	'part' : {
 		'title' : 'Název',
 		'page_body' : 'Tělo'
@@ -444,42 +496,59 @@ REFINERYCMS.plugin.Seo.analyzers = {
 	count_keywords: function () {
 		var elm, j, k, l, d, t, rg1, rg2 = '',
 			pkw = this.pkw,
-			report = this.report;
-		d = this.data;
+			cnt = 0,
+			report = this.report,
+			d = this.data, 
+			words = [];
 		
 		for (var elm_key in d) {
 			j = d[elm_key].length;
-			report[elm_key] = report[elm_key] || {};
-			report[elm_key]['pkw'] = report[elm_key]['pkw'] || [];
-		
+			
+			report[elm_key] = {
+				'pkw' : [0, 0],
+				'words' : 0
+			};
+			
 			while (j--) {
 				t = d[elm_key][j];
 				k = 0;
+				words = cleanArray(t.split(' '));
+				
+				report[elm_key]['words'] = report[elm_key]['words'] ? report[elm_key]['words'] + words.length : words.length;
 				
 				while (k < pkw.length) {
-					rg1 = t.match(new RegExp('(' + this.pkw[k] + ')', 'ig'));
-					report[elm_key]['pkw'][k] = report[elm_key]['pkw'][k] || 0;
-					report[elm_key]['pkw'][k] = rg1 ? report[elm_key]['pkw'][k] + rg1.length : report[elm_key]['pkw'][k];						
+					rg1 = t.match(new RegExp('(' + pkw[k] + ')', 'ig'));
+//						console.log('e: ' + elm_key + ' --k: ' + pkw[k]);
+//						console.log(rg1 ? rg1.length : 'fuck you');
+//						report[elm_key]['pkw'][k] = report[elm_kery]['pkw'][k] || 0;
+					cnt = rg1 ? rg1.length : 0;
+
+					report[elm_key]['pkw'][k] = report[elm_key]['pkw'][k] ? report[elm_key]['pkw'][k] + cnt : cnt;
+
 					k++;
 				}
 			}
 		}
 		
-		
+
 		this.report = report;
 	},
-	
+
 	process: function () {
 		var that = this;
 
 		if (that.document) {
 			var d = that.document;
-			var tmp1 = that.document.match(/<h1>(.*)<\/h1>/ig);
-			var tmp2 = that.document.match(/<h2>(.*)<\/h2>/ig);
-			var tmp3 = that.document.match(/<p>(.*)<\/p>/ig);
-			var tmp4 = that.document.match(/<a(.*)<\/a>/ig);
-			var tmp5 = that.document.match(/<body>(.*)<\/body>/ig);
-			var tmp6 = that.document.match(/<title(.*)<\/title>/ig);
+			d = d.replace(/(\r\n|\n)/g, '');
+			d = d.replace(/\t/gi, '');
+			d = d.replace(/\s{2,}/gi, ' ');
+			
+			var tmp1 = d.match(/<h1(.*)>(.*)<\/h1>/ig);
+			var tmp2 = d.match(/<h2(.*)>(.*)<\/h2>/ig);
+			var tmp3 = d.match(/<p(.*)>(.*)<\/p>/ig);
+			var tmp4 = d.match(/<a(.*)<\/a>/ig);
+			var tmp5 = d.match(/<body>(.*)<\/body>/ig);
+			var tmp6 = d.match(/<title(.*)<\/title>/ig);
 			
 			that.data['h1'] = that.sanitize_html_elm_data(tmp1);
 			that.data['h2'] = that.sanitize_html_elm_data(tmp2);
@@ -511,7 +580,6 @@ REFINERYCMS.plugin.Seo.analyzers = {
 		this.wkw = cfg.wkw || [];
 		this.document = cfg.document || '';
 		this.process();
-		this.count_keywords();
 	}
 };
 
@@ -943,32 +1011,60 @@ REFINERYCMS.plugin.Seo.analyzeDecorator = {
 			tb = '',
 			h1cls = '',
 			h2cls = '',
+			bcls = '',
+			h1pp = 0,
+			h2pp = 0,
+			app = 0,
+			bpp = 0,
 			acls = '',
+			h1cnt = 0,
+			h2cnt = 0,
 			acnt = 0,
+			bcnt = 0,
 			cfg = this.cfg;
 		
 		t = $('<table />');
 		th = $('<thead />');
 		
-		th.html('<tr><td class="c1">&nbsp;</td><th class="c1">H1</th><th class="c1">H2</th><th class="c1">Odkazy</th></tr>');
+		th.html('<tr><td class="c1">&nbsp;</td><th class="c1">H1</th><th class="c1">H2</th><th class="c1">Odkazy</th><th>Body</th></tr>');
 		t.append(th);
 		
 		tb = $('<tbody />');
 				
 		if (cfg.pkw) {
-		
 			for (var i = 0; i < cfg.pkw.length; i++ ) {
 				h1cls = (cfg.data['h1'] && cfg.data['h1']['pkw'] && cfg.data['h1']['pkw'][i] && cfg.data['h1']['pkw'][i] > 0) ? 'ok' : 'unsufficient';
 				h2cls = (cfg.data['h2'] && cfg.data['h2']['pkw'] && cfg.data['h2']['pkw'][i] && cfg.data['h2']['pkw'][i] > 0) ? 'ok' : 'unsufficient';
 				acls = (cfg.data['a'] && cfg.data['a']['pkw'] && cfg.data['a']['pkw'][i] && cfg.data['a']['pkw'][i] > 0) ? 'ok' : 'unsufficient';
+				bcls = (cfg.data['body'] && cfg.data['body']['pkw'] && cfg.data['body']['pkw'][i] && cfg.data['body']['pkw'][i] > 0) ? 'ok' : 'unsufficient';
+				
+				h1cnt = (h1cls === 'ok') ? cfg.data['h1']['pkw'][i] : 0;
+				h2cnt = (h2cls === 'ok') ? cfg.data['h2']['pkw'][i] : 0;
 				acnt = (acls === 'ok') ? cfg.data['a']['pkw'][i] : 0;
+				bcnt = (bcls === 'ok') ? cfg.data['a']['pkw'][i] : 0;	
+				
+				h1pp = calcpp(cfg.data['h1']['pkw'][i], cfg.data['h1']['words']);
+				h2pp = calcpp(cfg.data['h2']['pkw'][i], cfg.data['h2']['words']);
+				app = calcpp(cfg.data['a']['pkw'][i], cfg.data['a']['words']);
+				bpp = calcpp(cfg.data['body']['pkw'][i], cfg.data['body']['words']);
+				
 				tb.html(
 					tb.html() + 
 					'<tr><th>' + cfg.pkw[i] + '</th>' +
-					'<td class="' + h1cls + '">&nbsp;</td>' +
-					'<td class="' + h2cls + '">&nbsp;</td>' +
-					'<td class="' + acls + '">' + acnt + '</td></tr>'
+					'<td class="' + h1cls + '">' + h1pp + '%</td>' +
+					'<td class="' + h2cls + '">' + h2pp + '%</td>' +
+					'<td class="' + h1cls + '">' + acnt + ' / ' + app + '%</td>' +
+					'<td class="' + bcls + '">' + bcnt + ' / ' + bpp + '%</td></tr>'
 				);
+//				
+//				tb.html(
+//					tb.html() + 
+//					'<tr><th>' + cfg.pkw[i] + '</th>' +
+//					'<td class="' + h1cls + '">' + h1cnt + ' / ' + cfg.data['h1']['words'] + ' / ' + h1pp + '%</td>' +
+//					'<td class="' + h2cls + '">' + h2cnt + ' / ' + cfg.data['h2']['words'] + ' / ' + h2pp + '%</td>' +
+//					'<td class="' + h1cls + '">' + acnt + ' / ' + cfg.data['a']['words'] + ' / ' + app + '%</td>' +
+//					'<td>' + bcnt + ' / ' + bpp + '%</td></tr>'
+//				);
 			}
 		}
 		
