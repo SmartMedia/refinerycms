@@ -20,10 +20,11 @@ $(function () {
 		elm_description = $('#page_meta_description');
 
 	if (elm_keywords.length > 0 && elm_browser_title.length > 0 && elm_description.length) {
+		
 		var keywords_rules = {
 			'filled': true,
 			'min_length': 3,
-			'min_word_length' : 3,
+			'min_word_length': 3,
 			'max_length': 80,
 			'min_words_count': 2,
 			'max_words_count': 7
@@ -149,6 +150,7 @@ $(function () {
 						url: l,
 						dataType : 'html',
 						error: function (r) {
+							console.log(r);
 							alert(I18n.t('refinerycms.plugin.seo.validators.page_not_found'));
 						},
 						success: function (r) {

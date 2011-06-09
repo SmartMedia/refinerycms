@@ -13,12 +13,14 @@
 
 /*global REFINERYCMS, Object, Error, window, $, parent, console, I18n */
 
-'use strict';
+//'use strict';
 
 function cleanArray(actual){
-  var newArray = new Array();
-  for(var i = 0; i<actual.length; i++){
-      if (actual[i]){
+  var newArray = [],
+		l = actual.length;
+  
+  for(var i = 0; i < l; i++){
+    if (actual[i]){
         newArray.push(actual[i]);
     }
   }
