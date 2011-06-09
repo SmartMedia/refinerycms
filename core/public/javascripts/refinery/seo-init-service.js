@@ -138,12 +138,11 @@ $(function () {
 
 			if (!processing) {
 				processing = true;
-
 				seo.spinner_on($('#seo-report div.header'));
-				l = 'http://localhost:3000/';
-//				l = l.replace('/refinery/pages/', '');
-//				l = l.replace('/edit', '');
-//				l = '/' + l;
+				
+//				l = 'http://localhost:3000/';
+				l = l.replace(/^\/refinery\/pages\/|\/edit$/gi, '');
+				l = (l != 'home') ? '/' + l : '/';
 				
 				if (v['meta_tag_keywords']['filled']) {
 					$.ajax({
