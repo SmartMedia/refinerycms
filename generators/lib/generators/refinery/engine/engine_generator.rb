@@ -7,7 +7,7 @@ module ::Refinery
 
     include Rails::Generators::Migration
 
-    source_root Pathname.new(File.expand_path('../templates', __FILE__))
+    source_root Rails.root.join('generators', 'lib', 'generators', 'refinery', 'engine', 'templates')
     argument :attributes, :type => :array, :default => [], :banner => "field:type field:type"
 
     def generate
@@ -34,7 +34,6 @@ module ::Refinery
         if (engine = attributes.detect{|a| a.type.to_s == 'engine'}).present? and attributes.reject!{|a| a.type.to_s == 'engine'}.present?
           engine = engine.name.pluralize
         end
-
         Pathname.glob(Pathname.new(self.class.source_root).join('**', '**')).reject{|f| f.directory?}.sort.each do |path|
           unless (engine_path = engine_path_for(path, engine)).nil?
             template path, engine_path
@@ -44,7 +43,7 @@ module ::Refinery
         if engine.present?
           # go through all of the temporary files and merge what we need into the current files.
           tmp_directories = []
-          Dir.glob(File.expand_path('../templates/{config/locales/*.yml,config/routes.rb,features/support/paths.rb}', __FILE__), File::FNM_DOTMATCH).sort.each do |path|
+          Dir.glob(File.expand_path('../templates/{config/locales/*.yml,config/routes.rb}', __FILE__), File::FNM_DOTMATCH).sort.each do |path|
             # get the path to the current tmp file.
             new_file_path = Rails.root.join(engine_path_for(path, engine))
             tmp_directories << Pathname.new(new_file_path.to_s.split(File::SEPARATOR)[0..-2].join(File::SEPARATOR)) # save for later
@@ -129,7 +128,7 @@ module ::Refinery
   protected
 
     def engine_path_for(path, engine)
-      engine_path = "vendor/engines/#{engine.present? ? engine : plural_name}/"
+      engine_path = Rails.root.join('vendor', 'engines', engine.present? ? engine : plural_name)
       path = path.to_s.gsub(File.expand_path('../templates', __FILE__), engine_path)
 
       path = path.gsub("plural_name", plural_name)
