@@ -61,18 +61,6 @@ module ::Refinery
               routes_file += new_file_path.read.to_s.split("\n")[1..-2]
               routes_file << file_parts.last
               new_contents = routes_file.join("\n")
-            elsif new_file_path.to_s =~ %r{/features/support.*paths.rb$}
-              # ugh, please FIXME -- requires deep and intimate knowledge of the contents.
-              paths_file = (file_parts = current_path.read.to_s.split("\n"))[0..4]
-              paths_file << file_parts[5..-8].join("\n")
-
-              # get the parts of the new file that are relevant
-              new_file_parts = new_file_path.read.split("\n")
-              paths_file << new_file_parts[5..-4].join("\n")
-              paths_file << file_parts[-3..-1]
-
-              # join it all together
-              new_contents = paths_file.join("\n")
             end
             # write to current file the merged results.
             current_path.open('w+') { |f| f.puts new_contents } unless new_contents.nil?
@@ -137,7 +125,7 @@ module ::Refinery
       # Detect whether this is a special file that needs to get merged not overwritten.
       # This is important only when nesting engines.
       if engine.present? and File.exist?(path)
-        path = if path =~ %r{/locales/.*\.yml$} or path =~ %r{/routes.rb$} or path =~ %r{/features/support/paths.rb$}
+        path = if path =~ %r{/locales/.*\.yml$} or path =~ %r{/routes.rb$}
           # put new translations into a tmp directory
           path.split(File::SEPARATOR).insert(-2, "tmp").join(File::SEPARATOR)
         elsif path =~ %r{/readme.md$} or path =~ %r{/#{plural_name}.rb$}
